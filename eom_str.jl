@@ -5,13 +5,12 @@ eom_str =
 "# Automatically generated
 function eom(u,p,t)
     @unpack $(join(constants, ", "))$( isempty(z_as) ? "" : ", z") = p
-    $( isempty(specifieds) ? "" : "@unpack $( join(specifieds, ", ")) = p")
     @inbounds $(join(variables, ", ")) = u
 
     # specified variables
     $( begin 
         str = string.(uses(filter(x -> x.args[1] isa Expr && x.args[1].args[1] in [:z, :coef, :rhs], eqns_as), specifieds)) .|>
-        x -> "$x = $x(t)"
+        x -> "$x = _$x(t)"
         join(str, "; ")
     end)
 
